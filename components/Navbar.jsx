@@ -41,13 +41,16 @@ const Navbar = () => {
         <Show when={isLoaded && isSignedIn}>
           <UserButton />
         </Show>
-        <Show when={isLoaded && !isSignedIn}>
-          <SignInButton mode="modal">
-            <button className="flex items-center gap-2 hover:text-gray-900 transition">
+        <Show when={!isLoaded || !isSignedIn}>
+          <div className="flex items-center gap-4">
+            <Link href="/sign-in" className="flex items-center gap-2 hover:text-gray-900 transition">
               <Image src={assets.user_icon} alt="user icon" />
               Sign in
-            </button>
-          </SignInButton>
+            </Link>
+            <Link href="/sign-up" className="rounded-full border border-orange-600 px-4 py-2 text-orange-600 hover:bg-orange-50 transition">
+              Sign up
+            </Link>
+          </div>
         </Show>
       </ul>
 
@@ -56,13 +59,16 @@ const Navbar = () => {
         <Show when={isLoaded && isSignedIn}>
           <UserButton />
         </Show>
-        <Show when={isLoaded && !isSignedIn}>
-          <SignInButton mode="modal">
-            <button className="flex items-center gap-2 hover:text-gray-900 transition">
+        <Show when={!isLoaded || !isSignedIn}>
+          <div className="flex items-center gap-3">
+            <Link href="/sign-in" className="flex items-center gap-2 hover:text-gray-900 transition">
               <Image src={assets.user_icon} alt="user icon" />
               Sign in
-            </button>
-          </SignInButton>
+            </Link>
+            <Link href="/sign-up" className="rounded-full border border-orange-600 px-3 py-2 text-orange-600 hover:bg-orange-50 transition">
+              Sign up
+            </Link>
+          </div>
         </Show>
       </div>
     </nav>
