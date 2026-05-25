@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@clerk/nextjs": "^7.4.1",
     "axios": "^1.16.1",
     "next": "^15.5.18",
     "razorpay": "^2.9.6",
