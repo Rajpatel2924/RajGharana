@@ -6,12 +6,18 @@ import axios from 'axios';
 
 const RazorpayButton = ({ amount, email, phone, name, onPaymentSuccess, onPaymentFailure }) => {
   const [loading, setLoading] = useState(false);
+  const [scriptLoaded, setScriptLoaded] = useState(false);
+  const [scriptError, setScriptError] = useState(false);
 
   useEffect(() => {
     // Load Razorpay script
     const script = document.createElement('script');
     script.src = 'https://checkout.razorpay.com/v1/checkout.js';
     script.async = true;
+
+    script.onload = () => setScriptLoaded(true);
+    script.onerror = () => setScriptError(true);
+
     document.body.appendChild(script);
 
     return () => {
@@ -20,6 +26,20 @@ const RazorpayButton = ({ amount, email, phone, name, onPaymentSuccess, onPaymen
   }, []);
 
   const handlePayment = async () => {
+    if (!scriptLoaded) {
+      toast.error('Payment script not loaded yet. Please try again in a moment.');
+      return;
+    }
+
+    if (scriptError) {
+      toast.error('Unable to load Razorpay checkout. Please check your network.');
+      return;
+    }
+
+    if (!process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID) {
+      toast.error('Razorpay public key is not configured.');
+      return;
+    }
     setLoading(true);
     try {
       // Step 1: Create order on backend
@@ -67,9 +87,10 @@ const RazorpayButton = ({ amount, email, phone, name, onPaymentSuccess, onPaymen
                 onPaymentSuccess(verifyData);
               }
             } else {
-              toast.error('Payment verification failed');
+              const message = verifyData?.details || verifyData?.error || 'Payment verification failed';
+              toast.error(message);
               if (onPaymentFailure) {
-                onPaymentFailure('Verification failed');
+                onPaymentFailure(message);
               }
             }
           } catch (error) {
@@ -95,21 +116,24 @@ const RazorpayButton = ({ amount, email, phone, name, onPaymentSuccess, onPaymen
       razorpay.open();
     } catch (error) {
       console.error('Payment error:', error);
-      toast.error('Failed to initiate payment');
+      const message = error?.response?.data?.details || error?.message || 'Failed to initiate payment';
+      toast.error(message);
       if (onPaymentFailure) {
-        onPaymentFailure(error.message);
+        onPaymentFailure(message);
       }
     } finally {
       setLoading(false);
     }
   };
 
+  const isDisabled = loading || !amount || amount <= 0 || !scriptLoaded || scriptError;
+
   return (
     <button
       onClick={handlePayment}
-      disabled={loading || !amount || amount <= 0}
+      disabled={isDisabled}
       className={`w-full py-3 px-4 rounded-lg font-medium text-white transition-all ${
-        loading || !amount || amount <= 0
+        isDisabled
           ? 'bg-gray-400 cursor-not-allowed'
           : 'bg-orange-600 hover:bg-orange-700 active:scale-95'
       }`}
@@ -119,6 +143,10 @@ const RazorpayButton = ({ amount, email, phone, name, onPaymentSuccess, onPaymen
           <span className="animate-spin">⏳</span>
           Processing...
         </span>
+      ) : scriptError ? (
+        'Unable to load payment gateway'
+      ) : !scriptLoaded ? (
+        'Loading payment gateway...'
       ) : (
         `Pay ₹${amount?.toFixed(2) || '0'} with Razorpay`
       )}
