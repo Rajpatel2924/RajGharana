@@ -52,6 +52,7 @@ RajGharana includes integrated **Razorpay payment gateway** for secure transacti
    ```
 4. Add your Razorpay keys to `.env.local`:
    ```
+   RAZORPAY_KEY_ID=your_key_id
    NEXT_PUBLIC_RAZORPAY_KEY_ID=your_key_id
    RAZORPAY_KEY_SECRET=your_key_secret
    ```

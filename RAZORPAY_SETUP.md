@@ -31,6 +31,7 @@ This guide will help you set up Razorpay payment gateway integration for RajGhar
 
 2. Open `.env.local` and add your Razorpay keys:
    ```
+   RAZORPAY_KEY_ID=your_key_id_here
    NEXT_PUBLIC_RAZORPAY_KEY_ID=your_key_id_here
    RAZORPAY_KEY_SECRET=your_key_secret_here
    NEXT_PUBLIC_CURRENCY=₹
@@ -41,10 +42,10 @@ This guide will help you set up Razorpay payment gateway integration for RajGhar
 ### Payment Flow
 
 1. **User initiates payment** - Customer clicks "Pay" button from the cart/order summary page
-2. **Create Order** - The app calls `/api/razorpay/create-order` to create an order
+2. **Create Order** - The app calls `/api/create-order` to create an order
 3. **Razorpay Checkout** - Razorpay's checkout modal opens for payment
 4. **Payment Processing** - User completes payment in the modal
-5. **Verify Payment** - The app verifies the payment signature using `/api/razorpay/verify-payment`
+5. **Verify Payment** - The app verifies the payment signature using `/api/verify-payment`
 6. **Order Confirmation** - User is redirected to the order confirmation page
 
 ### Components & Files
@@ -57,12 +58,12 @@ This guide will help you set up Razorpay payment gateway integration for RajGhar
 
 #### **API Routes**
 
-**`/app/api/razorpay/create-order/route.js`**
+**`/app/api/create-order/route.js`**
 - Creates a Razorpay order
-- Receives: amount, currency, receipt, notes
-- Returns: order details with order ID
+- Receives: amount in paise, currency, receipt, notes
+- Returns: order_id, amount, and currency
 
-**`/app/api/razorpay/verify-payment/route.js`**
+**`/app/api/verify-payment/route.js`**
 - Verifies payment signature
 - Receives: razorpay_order_id, razorpay_payment_id, razorpay_signature
 - Returns: success status after signature verification
@@ -141,8 +142,8 @@ Once you're ready to accept real payments:
 
 ### "Invalid amount" Error
 
-- Ensure amount is greater than 0
-- Amount should be in the main currency unit (not in paise)
+- Ensure amount is at least 100 paise
+- Amount should be sent to the API in paise
 - Check that cart has items
 
 ### Signature Verification Failed

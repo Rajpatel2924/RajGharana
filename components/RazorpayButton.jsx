@@ -1,6 +1,7 @@
 'use client'
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import Script from 'next/script';
 import toast from 'react-hot-toast';
 import axios from 'axios';
 
@@ -10,22 +11,7 @@ const RazorpayButton = ({ amount, email, phone, name, onPaymentSuccess, onPaymen
   const [scriptError, setScriptError] = useState(false);
   const razorpayKeyId = process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID;
   const isConfigured = Boolean(razorpayKeyId);
-
-  useEffect(() => {
-    // Load Razorpay script
-    const script = document.createElement('script');
-    script.src = 'https://checkout.razorpay.com/v1/checkout.js';
-    script.async = true;
-
-    script.onload = () => setScriptLoaded(true);
-    script.onerror = () => setScriptError(true);
-
-    document.body.appendChild(script);
-
-    return () => {
-      document.body.removeChild(script);
-    };
-  }, []);
+  const amountInPaise = Math.round(Number(amount || 0) * 100);
 
   const handlePayment = async () => {
     if (!scriptLoaded) {
@@ -42,11 +28,16 @@ const RazorpayButton = ({ amount, email, phone, name, onPaymentSuccess, onPaymen
       toast.error('Razorpay is not configured. Add NEXT_PUBLIC_RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET to .env.local.');
       return;
     }
+
+    if (!Number.isInteger(amountInPaise) || amountInPaise < 100) {
+      toast.error('Minimum payment amount is ₹1.');
+      return;
+    }
+
     setLoading(true);
     try {
-      // Step 1: Create order on backend
-      const { data: orderData } = await axios.post('/api/razorpay/create-order', {
-        amount,
+      const { data: orderData } = await axios.post('/api/create-order', {
+        amount: amountInPaise,
         currency: 'INR',
         receipt: `order_${Date.now()}`,
         notes: {
@@ -56,13 +47,19 @@ const RazorpayButton = ({ amount, email, phone, name, onPaymentSuccess, onPaymen
         },
       });
 
+      const orderId = orderData.order_id || orderData.id;
+
+      if (!orderId) {
+        throw new Error('Payment order was not created. Please try again.');
+      }
+
       const options = {
-        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+        key: razorpayKeyId,
         amount: orderData.amount,
         currency: orderData.currency,
         name: 'RajGharana',
         description: 'Purchase from RajGharana',
-        order_id: orderData.id,
+        order_id: orderId,
         prefill: {
           name: name || '',
           email: email || '',
@@ -72,10 +69,10 @@ const RazorpayButton = ({ amount, email, phone, name, onPaymentSuccess, onPaymen
           color: '#F97316', // Orange color matching your brand
         },
         handler: async (response) => {
+          setLoading(true);
           try {
-            // Step 2: Verify payment on backend
             const { data: verifyData } = await axios.post(
-              '/api/razorpay/verify-payment',
+              '/api/verify-payment',
               {
                 razorpay_order_id: response.razorpay_order_id,
                 razorpay_payment_id: response.razorpay_payment_id,
@@ -101,6 +98,8 @@ const RazorpayButton = ({ amount, email, phone, name, onPaymentSuccess, onPaymen
             if (onPaymentFailure) {
               onPaymentFailure(error.message);
             }
+          } finally {
+            setLoading(false);
           }
         },
         modal: {
@@ -115,10 +114,19 @@ const RazorpayButton = ({ amount, email, phone, name, onPaymentSuccess, onPaymen
       };
 
       const razorpay = new window.Razorpay(options);
+      razorpay.on('payment.failed', (response) => {
+        const message = response?.error?.description || response?.error?.reason || 'Payment failed';
+        toast.error(message);
+        setLoading(false);
+        if (onPaymentFailure) {
+          onPaymentFailure(message);
+        }
+      });
+
       razorpay.open();
     } catch (error) {
       console.error('Payment error:', error);
-      const message = error?.response?.data?.details || error?.message || 'Failed to initiate payment';
+      const message = error?.response?.data?.error || error?.message || 'Failed to initiate payment';
       toast.error(message);
       if (onPaymentFailure) {
         onPaymentFailure(message);
@@ -128,10 +136,16 @@ const RazorpayButton = ({ amount, email, phone, name, onPaymentSuccess, onPaymen
     }
   };
 
-  const isDisabled = loading || !amount || amount <= 0 || !scriptLoaded || scriptError || !isConfigured;
+  const isDisabled = loading || amountInPaise < 100 || !scriptLoaded || scriptError || !isConfigured;
 
   return (
     <div className="space-y-2">
+      <Script
+        src="https://checkout.razorpay.com/v1/checkout.js"
+        strategy="afterInteractive"
+        onLoad={() => setScriptLoaded(true)}
+        onError={() => setScriptError(true)}
+      />
       <button
         onClick={handlePayment}
         disabled={isDisabled}
