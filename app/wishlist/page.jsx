@@ -7,7 +7,7 @@ import Link from 'next/link';
 import { assets } from '@/assets/assets';
 
 const WishlistPage = () => {
-  const { getWishlistProducts, addToCart, toggleWishlist, currency, router } = useAppContext();
+  const { getWishlistProducts, addToCart, toggleWishlist, currency, formatPrice, router } = useAppContext();
   const wishlistProducts = getWishlistProducts();
 
   return (
@@ -59,10 +59,10 @@ const WishlistPage = () => {
                   </div>
 
                   <div className="mb-4">
-                    <p className="text-lg font-bold text-gray-900">{currency}{product.offerPrice}</p>
-                    <p className="text-xs text-gray-400 line-through">{currency}{product.price}</p>
+                    <p className="text-lg font-bold text-gray-900">{currency}{formatPrice(product.offerPrice)}</p>
+                    <p className="text-xs text-gray-400 line-through">{currency}{formatPrice(product.price)}</p>
                     <p className="text-xs text-green-600 font-semibold mt-1">
-                      Save {currency}{(product.price - product.offerPrice).toFixed(2)}
+                      Save {currency}{formatPrice(product.price - product.offerPrice)}
                     </p>
                   </div>
 

@@ -1,11 +1,14 @@
 'use client'
 
+import { useAppContext } from "@/context/AppContext";
+
 const ProductSpecifications = ({ product }) => {
+  const { currency, formatPrice } = useAppContext();
   const specs = [
     { label: 'Brand', value: product.name.split(' ')[0] },
     { label: 'Category', value: product.category },
-    { label: 'Price', value: `$${product.price}` },
-    { label: 'Offer Price', value: `$${product.offerPrice}` },
+    { label: 'Price', value: `${currency}${formatPrice(product.price)}` },
+    { label: 'Offer Price', value: `${currency}${formatPrice(product.offerPrice)}` },
     { label: 'Discount', value: `${Math.round(((product.price - product.offerPrice) / product.price) * 100)}% OFF` },
   ];
 

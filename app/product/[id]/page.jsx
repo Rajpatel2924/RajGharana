@@ -18,7 +18,7 @@ const Product = () => {
 
     const { id } = useParams();
 
-    const { products, router, addToCart, toggleWishlist, isInWishlist, getRelatedProducts, currency } = useAppContext()
+    const { products, router, addToCart, toggleWishlist, isInWishlist, getRelatedProducts, currency, formatPrice } = useAppContext()
 
     const [productData, setProductData] = useState(null);
     const [relatedProducts, setRelatedProducts] = useState([]);
@@ -80,13 +80,13 @@ const Product = () => {
                         {/* Price */}
                         <div className="mb-6">
                             <p className="text-4xl font-bold text-gray-900">
-                                {currency}{productData.offerPrice}
+                                {currency}{formatPrice(productData.offerPrice)}
                             </p>
                             <p className="text-lg text-gray-500 line-through mt-1">
-                                {currency}{productData.price}
+                                {currency}{formatPrice(productData.price)}
                             </p>
                             <p className="text-lg font-semibold text-green-600 mt-2">
-                                Save {currency}{(productData.price - productData.offerPrice).toFixed(2)} ({Math.round(((productData.price - productData.offerPrice) / productData.price) * 100)}%)
+                                Save {currency}{formatPrice(productData.price - productData.offerPrice)} ({Math.round(((productData.price - productData.offerPrice) / productData.price) * 100)}%)
                             </p>
                         </div>
 

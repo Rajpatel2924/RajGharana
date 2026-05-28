@@ -5,7 +5,7 @@ import { useAppContext } from '@/context/AppContext';
 
 const ProductCard = ({ product }) => {
 
-    const { currency, router, toggleWishlist, isInWishlist, getRatingBreakdown } = useAppContext()
+    const { currency, formatPrice, router, toggleWishlist, isInWishlist, getRatingBreakdown } = useAppContext()
     const isWishlisted = isInWishlist(product._id);
     const ratingData = getRatingBreakdown(product._id);
 
@@ -70,8 +70,8 @@ const ProductCard = ({ product }) => {
 
             <div className="flex items-end justify-between w-full mt-2">
                 <div>
-                    <p className="text-base font-medium">{currency}{product.offerPrice}</p>
-                    <p className="text-xs text-gray-400 line-through">{currency}{product.price}</p>
+                    <p className="text-base font-medium">{currency}{formatPrice(product.offerPrice)}</p>
+                    <p className="text-xs text-gray-400 line-through">{currency}{formatPrice(product.price)}</p>
                 </div>
                 <button className=" max-sm:hidden px-3 py-1.5 text-white bg-orange-600 border-0 rounded-full text-xs hover:bg-orange-700 transition">
                     Add

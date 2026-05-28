@@ -11,7 +11,8 @@ export const useAppContext = () => {
 
 export const AppContextProvider = (props) => {
 
-    const currency = process.env.NEXT_PUBLIC_CURRENCY
+    const currency = process.env.NEXT_PUBLIC_CURRENCY || '₹'
+    const formatPrice = (amount) => Number(amount || 0).toLocaleString('en-IN')
     const router = useRouter()
 
     const [products, setProducts] = useState([])
@@ -249,7 +250,7 @@ export const AppContextProvider = (props) => {
     }, [])
 
     const value = {
-        currency, router,
+        currency, formatPrice, router,
         isSeller, setIsSeller,
         userData, fetchUserData,
         products, fetchProductData,

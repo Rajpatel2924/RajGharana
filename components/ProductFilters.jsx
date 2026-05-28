@@ -5,12 +5,12 @@ import Image from 'next/image';
 import { assets } from '@/assets/assets';
 
 const ProductFilters = () => {
-  const { filters, setFilters, getCategories, products } = useAppContext();
+  const { filters, setFilters, getCategories, products, currency, formatPrice } = useAppContext();
   const [showFilters, setShowFilters] = useState(true);
   const categories = getCategories();
 
   const minPrice = 0;
-  const maxPrice = 5000;
+  const maxPrice = Math.max(500000, ...products.map(product => product.offerPrice || 0));
 
   const handleCategoryChange = (category) => {
     setFilters(prev => ({
@@ -88,7 +88,7 @@ const ProductFilters = () => {
             <div className="space-y-3">
               <div>
                 <label className="text-xs text-gray-600 block mb-1">
-                  Min: ${filters.priceRange[0]}
+                  Min: {currency}{formatPrice(filters.priceRange[0])}
                 </label>
                 <input
                   type="range"
@@ -101,7 +101,7 @@ const ProductFilters = () => {
               </div>
               <div>
                 <label className="text-xs text-gray-600 block mb-1">
-                  Max: ${filters.priceRange[1]}
+                  Max: {currency}{formatPrice(filters.priceRange[1])}
                 </label>
                 <input
                   type="range"
