@@ -41,14 +41,16 @@ const ProductFilters = () => {
     setFilters({
       category: [],
       priceRange: [minPrice, maxPrice],
-      minRating: 0
+      minRating: 0,
+      badge: null
     });
   };
 
   const hasActiveFilters = filters.category.length > 0 ||
                           filters.priceRange[0] > minPrice ||
                           filters.priceRange[1] < maxPrice ||
-                          filters.minRating > 0;
+                          filters.minRating > 0 ||
+                          Boolean(filters.badge);
 
   return (
     <div className="w-64 max-md:w-full max-md:mb-6">

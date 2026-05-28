@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { assets } from "@/assets/assets";
 import Image from "next/image";
+import { useAppContext } from "@/context/AppContext";
 
 const HeaderSlider = () => {
+  const { addToCart, router, setFilters } = useAppContext();
   const sliderData = [
     {
       id: 1,
@@ -11,6 +13,8 @@ const HeaderSlider = () => {
       buttonText1: "Buy now",
       buttonText2: "Find more",
       imgSrc: assets.header_headphone_image,
+      productId: "67a1f52e3f34a77b6dde914a",
+      category: "Headphone",
     },
     {
       id: 2,
@@ -19,6 +23,9 @@ const HeaderSlider = () => {
       buttonText1: "Shop Now",
       buttonText2: "Explore Deals",
       imgSrc: assets.header_playstation_image,
+      productId: "67a1f5ef3f34a77b6dde9150",
+      category: "Accessories",
+      badge: "Deal",
     },
     {
       id: 3,
@@ -27,6 +34,9 @@ const HeaderSlider = () => {
       buttonText1: "Order Now",
       buttonText2: "Learn More",
       imgSrc: assets.header_macbook_image,
+      productId: "67a1f7c93f34a77b6dde915a",
+      category: "Laptop",
+      secondaryRoute: "/product/67a1f7c93f34a77b6dde915a",
     },
   ];
 
@@ -41,6 +51,29 @@ const HeaderSlider = () => {
 
   const handleSlideChange = (index) => {
     setCurrentSlide(index);
+  };
+
+  const openCartWithProduct = async (productId) => {
+    await addToCart(productId);
+    router.push("/cart");
+    scrollTo(0, 0);
+  };
+
+  const browseSlideProducts = (slide) => {
+    if (slide.secondaryRoute) {
+      router.push(slide.secondaryRoute);
+      scrollTo(0, 0);
+      return;
+    }
+
+    setFilters({
+      category: slide.category ? [slide.category] : [],
+      priceRange: [0, 500000],
+      minRating: 0,
+      badge: slide.badge || null,
+    });
+    router.push("/all-products");
+    scrollTo(0, 0);
   };
 
   return (
@@ -62,10 +95,16 @@ const HeaderSlider = () => {
                 {slide.title}
               </h1>
               <div className="flex items-center mt-4 md:mt-6 ">
-                <button className="md:px-10 px-7 md:py-2.5 py-2 bg-orange-600 rounded-full text-white font-medium">
+                <button
+                  onClick={() => openCartWithProduct(slide.productId)}
+                  className="md:px-10 px-7 md:py-2.5 py-2 bg-orange-600 rounded-full text-white font-medium"
+                >
                   {slide.buttonText1}
                 </button>
-                <button className="group flex items-center gap-2 px-6 py-2.5 font-medium">
+                <button
+                  onClick={() => browseSlideProducts(slide)}
+                  className="group flex items-center gap-2 px-6 py-2.5 font-medium"
+                >
                   {slide.buttonText2}
                   <Image className="group-hover:translate-x-1 transition" src={assets.arrow_icon} alt="arrow_icon" />
                 </button>

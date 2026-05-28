@@ -26,7 +26,8 @@ export const AppContextProvider = (props) => {
     const [filters, setFilters] = useState({
         category: [],
         priceRange: [0, 500000],
-        minRating: 0
+        minRating: 0,
+        badge: null
     })
     const [sortBy, setSortBy] = useState("relevance") // relevance, price-low, price-high, rating, newest
 
@@ -118,6 +119,10 @@ export const AppContextProvider = (props) => {
             filtered = filtered.filter(product =>
                 (product.rating || 4.5) >= filters.minRating
             );
+        }
+
+        if (filters.badge) {
+            filtered = filtered.filter(product => product.badge === filters.badge);
         }
 
         // Apply sorting

@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { useState, useEffect } from 'react';
 
 const DealOfTheDay = () => {
-  const { products, router } = useAppContext();
+  const { products, router, setFilters } = useAppContext();
   const [timeLeft, setTimeLeft] = useState({
     hours: 23,
     minutes: 45,
@@ -67,7 +67,15 @@ const DealOfTheDay = () => {
       </div>
 
       <button
-        onClick={() => router.push('/all-products?filter=deal')}
+        onClick={() => {
+          setFilters({
+            category: [],
+            priceRange: [0, 500000],
+            minRating: 0,
+            badge: 'Deal',
+          });
+          router.push('/all-products');
+        }}
         className="w-full mt-6 py-3 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition font-semibold"
       >
         View All Deals
