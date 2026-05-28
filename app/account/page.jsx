@@ -1,7 +1,6 @@
 'use client';
 
 import {
-  Show,
   SignInButton,
   SignOutButton,
   useUser,
@@ -35,7 +34,7 @@ export default function AccountPage() {
       <Navbar />
       <main className="min-h-screen bg-slate-50">
         <div className="px-6 md:px-16 lg:px-32 py-8">
-          <Show when={isSignedIn}>
+          {isSignedIn && (
             <div className="space-y-8">
               <section className="rounded-3xl bg-white border border-slate-200 p-8 shadow-sm">
                 <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
@@ -198,9 +197,9 @@ export default function AccountPage() {
                 </section>
               </div>
             </div>
-          </Show>
+          )}
 
-          <Show when={!isSignedIn}>
+          {!isSignedIn && (
             <div className="rounded-3xl bg-white border border-slate-200 p-10 shadow-sm">
               <div className="max-w-2xl mx-auto text-center">
                 <p className="text-sm uppercase tracking-[0.3em] text-orange-600">Member sign in</p>
@@ -220,7 +219,7 @@ export default function AccountPage() {
                 </div>
               </div>
             </div>
-          </Show>
+          )}
         </div>
       </main>
       <Footer />

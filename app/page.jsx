@@ -7,6 +7,8 @@ import NewsLetter from "@/components/NewsLetter";
 import FeaturedProduct from "@/components/FeaturedProduct";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import CategoryCards from "@/components/CategoryCards";
+import DealOfTheDay from "@/components/DealOfTheDay";
 
 const Home = () => {
   return (
@@ -14,6 +16,8 @@ const Home = () => {
       <Navbar/>
       <div className="px-6 md:px-16 lg:px-32">
         <HeaderSlider />
+        <CategoryCards />
+        <DealOfTheDay />
         <HomeProducts />
         <FeaturedProduct />
         <Banner />

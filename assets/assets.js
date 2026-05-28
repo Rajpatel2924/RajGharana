@@ -145,6 +145,14 @@ export const productsDummyData = [
       "https://raw.githubusercontent.com/avinashdm/gs-images/main/quickcart/k1oqaslw5tb3ebw01vvj.webp"
     ],
     "category": "Earphone",
+    "rating": 4.7,
+    "ratings": [
+      { rating: 5, comment: "Excellent sound quality and comfort", author: "John D.", verified: true },
+      { rating: 5, comment: "Best earbuds I've owned", author: "Sarah M.", verified: true },
+      { rating: 4, comment: "Great but a bit pricey", author: "Mike T.", verified: true }
+    ],
+    "bestseller": true,
+    "badge": "Deal",
     "date": 1738667236865,
     "__v": 0
   },
@@ -159,6 +167,13 @@ export const productsDummyData = [
       "https://raw.githubusercontent.com/avinashdm/gs-images/main/quickcart/m16coelz8ivkk9f0nwrz.webp"
     ],
     "category": "Headphone",
+    "rating": 4.6,
+    "ratings": [
+      { rating: 5, comment: "Perfect noise cancellation", author: "Emma L.", verified: true },
+      { rating: 4, comment: "Very comfortable for long use", author: "David K.", verified: true }
+    ],
+    "bestseller": true,
+    "badge": null,
     "date": 1738667310300,
     "__v": 0
   },
@@ -173,6 +188,13 @@ export const productsDummyData = [
       "https://raw.githubusercontent.com/avinashdm/gs-images/main/quickcart/xjd4eprpwqs7odbera1w.webp"
     ],
     "category": "Smartphone",
+    "rating": 4.5,
+    "ratings": [
+      { rating: 5, comment: "Amazing camera and display", author: "Alex P.", verified: true },
+      { rating: 4, comment: "Great phone, battery could be better", author: "Lisa W.", verified: true }
+    ],
+    "bestseller": true,
+    "badge": "New",
     "date": 1738667366224,
     "__v": 0
   },
@@ -187,6 +209,12 @@ export const productsDummyData = [
       "https://raw.githubusercontent.com/avinashdm/gs-images/main/quickcart/hdfi4u3fmprazpnrnaga.webp"
     ],
     "category": "Earphone",
+    "rating": 4.4,
+    "ratings": [
+      { rating: 4, comment: "Excellent fitness tracking", author: "James H.", verified: true }
+    ],
+    "bestseller": false,
+    "badge": null,
     "date": 1738667417511,
     "__v": 0
   },
@@ -201,6 +229,14 @@ export const productsDummyData = [
       "https://raw.githubusercontent.com/avinashdm/gs-images/main/quickcart/dd3l13vfoartrgbvkkh5.webp"
     ],
     "category": "Accessories",
+    "rating": 4.8,
+    "ratings": [
+      { rating: 5, comment: "Incredible gaming experience", author: "Ryan S.", verified: true },
+      { rating: 5, comment: "Best console on the market", author: "Mark C.", verified: true },
+      { rating: 4, comment: "Great but limited game library", author: "Tom R.", verified: true }
+    ],
+    "bestseller": true,
+    "badge": "Deal",
     "date": 1738667503075,
     "__v": 0
   },
@@ -215,6 +251,13 @@ export const productsDummyData = [
       "https://raw.githubusercontent.com/avinashdm/gs-images/main/quickcart/r5h370zuujvrw461c6wy.webp"
     ],
     "category": "Camera",
+    "rating": 4.9,
+    "ratings": [
+      { rating: 5, comment: "Professional grade camera", author: "Pro Photographer", verified: true },
+      { rating: 5, comment: "Outstanding image quality", author: "Nina G.", verified: true }
+    ],
+    "bestseller": false,
+    "badge": null,
     "date": 1738667788883,
     "__v": 0
   },
@@ -229,6 +272,14 @@ export const productsDummyData = [
       "https://raw.githubusercontent.com/avinashdm/gs-images/main/quickcart/rzri7kytphxalrm9rubd.webp"
     ],
     "category": "Laptop",
+    "rating": 4.7,
+    "ratings": [
+      { rating: 5, comment: "Perfect for development", author: "Coder Joe", verified: true },
+      { rating: 5, comment: "Best laptop ever", author: "Designer Amy", verified: true },
+      { rating: 4, comment: "Expensive but worth it", author: "Chris B.", verified: true }
+    ],
+    "bestseller": true,
+    "badge": null,
     "date": 1738667977644,
     "__v": 0
   },
@@ -243,6 +294,13 @@ export const productsDummyData = [
       "https://raw.githubusercontent.com/avinashdm/gs-images/main/quickcart/e3zjaupyumdkladmytke.webp"
     ],
     "category": "Earphone",
+    "rating": 4.6,
+    "ratings": [
+      { rating: 5, comment: "Amazing sound quality", author: "Music Lover", verified: true },
+      { rating: 4, comment: "Great earbuds", author: "Ben F.", verified: true }
+    ],
+    "bestseller": true,
+    "badge": "Deal",
     "date": 1738668086331,
     "__v": 0
   },
@@ -257,6 +315,12 @@ export const productsDummyData = [
       "https://raw.githubusercontent.com/avinashdm/gs-images/main/quickcart/qqdcly8a8vkyciy9g0bw.webp"
     ],
     "category": "Accessories",
+    "rating": 4.3,
+    "ratings": [
+      { rating: 4, comment: "Great for home theater", author: "Movie Fan", verified: true }
+    ],
+    "bestseller": false,
+    "badge": null,
     "date": 1738668126660,
     "__v": 0
   },
@@ -271,6 +335,14 @@ export const productsDummyData = [
       "https://raw.githubusercontent.com/avinashdm/gs-images/main/quickcart/wig1urqgnkeyp4t2rtso.webp"
     ],
     "category": "Laptop",
+    "rating": 4.8,
+    "ratings": [
+      { rating: 5, comment: "Perfect for gaming", author: "Gamer Max", verified: true },
+      { rating: 5, comment: "Top tier performance", author: "Pro Gamer", verified: true },
+      { rating: 4, comment: "Excellent but hot", author: "User123", verified: true }
+    ],
+    "bestseller": true,
+    "badge": "New",
     "date": 1738668619198,
     "__v": 0
   }

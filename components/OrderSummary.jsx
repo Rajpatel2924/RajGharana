@@ -47,6 +47,8 @@ const OrderSummary = () => {
     return subtotal + tax;
   }
 
+  const razorpayConfigured = Boolean(process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID);
+
   useEffect(() => {
     fetchUserAddresses();
   }, [])
@@ -148,14 +150,21 @@ const OrderSummary = () => {
           Add Items to Cart
         </button>
       ) : (
-        <RazorpayButton
-          amount={getTotalAmount()}
-          email={selectedAddress.email || userDummyData.email}
-          phone={selectedAddress.phone || userDummyData.phone}
-          name={selectedAddress.fullName || userDummyData.name}
-          onPaymentSuccess={handlePaymentSuccess}
-          onPaymentFailure={handlePaymentFailure}
-        />
+        <div className="space-y-3">
+          {!razorpayConfigured && (
+            <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+              Razorpay is not configured for this app. Add your keys to <span className="font-semibold">.env.local</span> using the values from <span className="font-semibold">.env.local.example</span>.
+            </div>
+          )}
+          <RazorpayButton
+            amount={getTotalAmount()}
+            email={selectedAddress.email || userDummyData.email}
+            phone={selectedAddress.phone || userDummyData.phone}
+            name={selectedAddress.fullName || userDummyData.name}
+            onPaymentSuccess={handlePaymentSuccess}
+            onPaymentFailure={handlePaymentFailure}
+          />
+        </div>
       )}
     </div>
   );

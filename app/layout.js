@@ -17,7 +17,6 @@ export default function RootLayout({ children }) {
         <body className={`${outfit.className} antialiased text-gray-700`} >
           <ClerkProvider
             publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
-            frontendApi={process.env.NEXT_PUBLIC_CLERK_FRONTEND_API}
           >
             <Toaster />
             <AppContextProvider>

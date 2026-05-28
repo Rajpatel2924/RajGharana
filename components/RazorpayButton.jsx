@@ -8,6 +8,8 @@ const RazorpayButton = ({ amount, email, phone, name, onPaymentSuccess, onPaymen
   const [loading, setLoading] = useState(false);
   const [scriptLoaded, setScriptLoaded] = useState(false);
   const [scriptError, setScriptError] = useState(false);
+  const razorpayKeyId = process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID;
+  const isConfigured = Boolean(razorpayKeyId);
 
   useEffect(() => {
     // Load Razorpay script
@@ -36,8 +38,8 @@ const RazorpayButton = ({ amount, email, phone, name, onPaymentSuccess, onPaymen
       return;
     }
 
-    if (!process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID) {
-      toast.error('Razorpay public key is not configured.');
+    if (!isConfigured) {
+      toast.error('Razorpay is not configured. Add NEXT_PUBLIC_RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET to .env.local.');
       return;
     }
     setLoading(true);
@@ -126,31 +128,40 @@ const RazorpayButton = ({ amount, email, phone, name, onPaymentSuccess, onPaymen
     }
   };
 
-  const isDisabled = loading || !amount || amount <= 0 || !scriptLoaded || scriptError;
+  const isDisabled = loading || !amount || amount <= 0 || !scriptLoaded || scriptError || !isConfigured;
 
   return (
-    <button
-      onClick={handlePayment}
-      disabled={isDisabled}
-      className={`w-full py-3 px-4 rounded-lg font-medium text-white transition-all ${
-        isDisabled
-          ? 'bg-gray-400 cursor-not-allowed'
-          : 'bg-orange-600 hover:bg-orange-700 active:scale-95'
-      }`}
-    >
-      {loading ? (
-        <span className="flex items-center justify-center gap-2">
-          <span className="animate-spin">⏳</span>
-          Processing...
-        </span>
-      ) : scriptError ? (
-        'Unable to load payment gateway'
-      ) : !scriptLoaded ? (
-        'Loading payment gateway...'
-      ) : (
-        `Pay ₹${amount?.toFixed(2) || '0'} with Razorpay`
+    <div className="space-y-2">
+      <button
+        onClick={handlePayment}
+        disabled={isDisabled}
+        className={`w-full py-3 px-4 rounded-lg font-medium text-white transition-all ${
+          isDisabled
+            ? 'bg-gray-400 cursor-not-allowed'
+            : 'bg-orange-600 hover:bg-orange-700 active:scale-95'
+        }`}
+      >
+        {loading ? (
+          <span className="flex items-center justify-center gap-2">
+            <span className="animate-spin">⏳</span>
+            Processing...
+          </span>
+        ) : scriptError ? (
+          'Unable to load payment gateway'
+        ) : !scriptLoaded ? (
+          'Loading payment gateway...'
+        ) : !isConfigured ? (
+          'Razorpay not configured'
+        ) : (
+          `Pay ₹${amount?.toFixed(2) || '0'} with Razorpay`
+        )}
+      </button>
+      {!isConfigured && (
+        <p className="text-xs text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-2">
+          Razorpay is not configured. Copy <span className="font-semibold">.env.local.example</span> to <span className="font-semibold">.env.local</span> and add your test or live keys.
+        </p>
       )}
-    </button>
+    </div>
   );
 };
 

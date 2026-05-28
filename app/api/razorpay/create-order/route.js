@@ -9,7 +9,7 @@ export async function POST(req) {
       return NextResponse.json(
         { 
           error: "Payment service not configured",
-          details: "Please set NEXT_PUBLIC_RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET in .env.local"
+          details: "Please set NEXT_PUBLIC_RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET in .env.local. Use .env.local.example as a template."
         },
         { status: 500 }
       );

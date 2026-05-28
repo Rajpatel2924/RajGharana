@@ -5,7 +5,14 @@ import { useAppContext } from '@/context/AppContext';
 
 const ProductCard = ({ product }) => {
 
-    const { currency, router } = useAppContext()
+    const { currency, router, toggleWishlist, isInWishlist, getRatingBreakdown } = useAppContext()
+    const isWishlisted = isInWishlist(product._id);
+    const ratingData = getRatingBreakdown(product._id);
+
+    const handleWishlistToggle = (e) => {
+        e.stopPropagation();
+        toggleWishlist(product._id);
+    };
 
     return (
         <div
@@ -20,26 +27,37 @@ const ProductCard = ({ product }) => {
                     width={800}
                     height={800}
                 />
-                <button className="absolute top-2 right-2 bg-white p-2 rounded-full shadow-md">
+                {product.badge && (
+                    <span className="absolute top-2 left-2 bg-orange-600 text-white text-xs px-2 py-1 rounded">
+                        {product.badge}
+                    </span>
+                )}
+                <button
+                    onClick={handleWishlistToggle}
+                    className="absolute top-2 right-2 bg-white p-2 rounded-full shadow-md hover:bg-gray-100 transition"
+                >
                     <Image
-                        className="h-3 w-3"
-                        src={assets.heart_icon}
+                        className="h-4 w-4"
+                        src={isWishlisted ? assets.heart_icon : assets.heart_icon}
                         alt="heart_icon"
+                        style={{ filter: isWishlisted ? 'invert(0.2) sepia(1) saturate(5) hue-rotate(0deg)' : 'none' }}
                     />
                 </button>
             </div>
 
             <p className="md:text-base font-medium pt-2 w-full truncate">{product.name}</p>
             <p className="w-full text-xs text-gray-500/70 max-sm:hidden truncate">{product.description}</p>
-            <div className="flex items-center gap-2">
-                <p className="text-xs">{4.5}</p>
+
+            {/* Rating Section */}
+            <div className="flex items-center gap-2 mt-1">
+                <p className="text-xs font-semibold">{ratingData.averageRating}</p>
                 <div className="flex items-center gap-0.5">
                     {Array.from({ length: 5 }).map((_, index) => (
                         <Image
                             key={index}
                             className="h-3 w-3"
                             src={
-                                index < Math.floor(4)
+                                index < Math.floor(ratingData.averageRating)
                                     ? assets.star_icon
                                     : assets.star_dull_icon
                             }
@@ -47,12 +65,16 @@ const ProductCard = ({ product }) => {
                         />
                     ))}
                 </div>
+                <p className="text-xs text-gray-500">({ratingData.totalReviews})</p>
             </div>
 
-            <div className="flex items-end justify-between w-full mt-1">
-                <p className="text-base font-medium">{currency}{product.offerPrice}</p>
-                <button className=" max-sm:hidden px-4 py-1.5 text-gray-500 border border-gray-500/20 rounded-full text-xs hover:bg-slate-50 transition">
-                    Buy now
+            <div className="flex items-end justify-between w-full mt-2">
+                <div>
+                    <p className="text-base font-medium">{currency}{product.offerPrice}</p>
+                    <p className="text-xs text-gray-400 line-through">{currency}{product.price}</p>
+                </div>
+                <button className=" max-sm:hidden px-3 py-1.5 text-white bg-orange-600 border-0 rounded-full text-xs hover:bg-orange-700 transition">
+                    Add
                 </button>
             </div>
         </div>
