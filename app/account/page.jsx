@@ -10,11 +10,13 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import Loading from '@/components/Loading';
 import Link from 'next/link';
+import { useAppContext } from '@/context/AppContext';
 
 export default function AccountPage() {
   const { isLoaded, isSignedIn, user } = useUser();
+  const { userAddresses } = useAppContext();
   const recentOrders = orderDummyData.slice(0, 3);
-  const defaultAddress = addressDummyData[0];
+  const defaultAddress = userAddresses[0] || addressDummyData[0];
   const displayName = user?.fullName || user?.firstName || 'Customer';
   const userEmail = user?.emailAddresses?.[0]?.emailAddress || 'No email available';
 
@@ -174,9 +176,9 @@ export default function AccountPage() {
                     <div className="rounded-3xl bg-white border border-slate-200 p-6 shadow-sm">
                       <h2 className="text-lg font-semibold text-slate-900">Payment methods</h2>
                       <p className="mt-4 text-sm text-slate-600">No saved payment methods yet. Add a card or use Razorpay at checkout for easier purchases.</p>
-                      <button className="mt-5 rounded-full bg-orange-600 px-5 py-3 text-sm font-medium text-white hover:bg-orange-700">
+                      <Link href="/cart" className="mt-5 inline-flex rounded-full bg-orange-600 px-5 py-3 text-sm font-medium text-white hover:bg-orange-700">
                         Add payment method
-                      </button>
+                      </Link>
                     </div>
                   </div>
 

@@ -1,5 +1,5 @@
 'use client'
-import { productsDummyData, userDummyData } from "@/assets/assets";
+import { addressDummyData, productsDummyData, userDummyData } from "@/assets/assets";
 import { useRouter } from "next/navigation";
 import { createContext, useContext, useEffect, useState, useMemo } from "react";
 
@@ -19,6 +19,7 @@ export const AppContextProvider = (props) => {
     const [userData, setUserData] = useState(false)
     const [isSeller, setIsSeller] = useState(true)
     const [cartItems, setCartItems] = useState({})
+    const [userAddresses, setUserAddresses] = useState([])
 
     // New state for Amazon-like features
     const [wishlistItems, setWishlistItems] = useState([])
@@ -32,6 +33,7 @@ export const AppContextProvider = (props) => {
     const [sortBy, setSortBy] = useState("relevance") // relevance, price-low, price-high, rating, newest
 
     const wishlistStorageKey = 'rajgharana_wishlist';
+    const addressStorageKey = 'rajgharana_addresses';
 
     // Load wishlist from localStorage on mount
     useEffect(() => {
@@ -58,12 +60,46 @@ export const AppContextProvider = (props) => {
         localStorage.setItem(wishlistStorageKey, JSON.stringify(wishlistItems));
     }, [wishlistItems, wishlistStorageKey])
 
+    useEffect(() => {
+        const savedAddresses = localStorage.getItem(addressStorageKey);
+
+        if (savedAddresses) {
+            try {
+                const parsedAddresses = JSON.parse(savedAddresses);
+                setUserAddresses(Array.isArray(parsedAddresses) ? parsedAddresses : addressDummyData);
+                return;
+            } catch (e) {
+                setUserAddresses(addressDummyData);
+                return;
+            }
+        }
+
+        setUserAddresses(addressDummyData);
+        localStorage.setItem(addressStorageKey, JSON.stringify(addressDummyData));
+    }, [addressStorageKey])
+
+    useEffect(() => {
+        if (userAddresses.length > 0) {
+            localStorage.setItem(addressStorageKey, JSON.stringify(userAddresses));
+        }
+    }, [userAddresses, addressStorageKey])
+
     const fetchProductData = async () => {
         setProducts(productsDummyData)
     }
 
     const fetchUserData = async () => {
         setUserData(userDummyData)
+    }
+
+    const addAddress = (address) => {
+        const newAddress = {
+            ...address,
+            _id: `local_${Date.now()}`,
+        };
+
+        setUserAddresses(prev => [newAddress, ...prev]);
+        return newAddress;
     }
 
     // Wishlist functions
@@ -262,6 +298,7 @@ export const AppContextProvider = (props) => {
         cartItems, setCartItems,
         addToCart, updateCartQuantity,
         getCartCount, getCartAmount,
+        userAddresses, addAddress,
 
         // New Amazon-like features
         wishlistItems, toggleWishlist, isInWishlist, getWishlistProducts,
