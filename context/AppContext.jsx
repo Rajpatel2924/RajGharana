@@ -29,12 +29,22 @@ export const AppContextProvider = (props) => {
     })
     const [sortBy, setSortBy] = useState("relevance") // relevance, price-low, price-high, rating, newest
 
+    const wishlistStorageKey = 'rajgharana_wishlist';
+
     // Load wishlist from localStorage on mount
     useEffect(() => {
-        const savedWishlist = localStorage.getItem('quickcart_wishlist');
+        const newStorageWishlist = localStorage.getItem(wishlistStorageKey);
+        const legacyWishlist = localStorage.getItem('quickcart_wishlist');
+        const savedWishlist = newStorageWishlist || legacyWishlist;
+
         if (savedWishlist) {
             try {
                 setWishlistItems(JSON.parse(savedWishlist));
+
+                if (!newStorageWishlist && legacyWishlist) {
+                    localStorage.setItem(wishlistStorageKey, legacyWishlist);
+                    localStorage.removeItem('quickcart_wishlist');
+                }
             } catch (e) {
                 setWishlistItems([]);
             }
@@ -43,8 +53,8 @@ export const AppContextProvider = (props) => {
 
     // Save wishlist to localStorage whenever it changes
     useEffect(() => {
-        localStorage.setItem('quickcart_wishlist', JSON.stringify(wishlistItems));
-    }, [wishlistItems])
+        localStorage.setItem(wishlistStorageKey, JSON.stringify(wishlistItems));
+    }, [wishlistItems, wishlistStorageKey])
 
     const fetchProductData = async () => {
         setProducts(productsDummyData)

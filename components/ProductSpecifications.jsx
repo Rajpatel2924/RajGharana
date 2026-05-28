@@ -43,7 +43,7 @@ const ProductSpecifications = ({ product }) => {
         <div className="flex items-start gap-3">
           <span className="text-green-600 text-lg">✓</span>
           <div>
-            <p className="text-sm font-semibold text-gray-800">Ships from and sold by QuickCart</p>
+            <p className="text-sm font-semibold text-gray-800">Ships from and sold by RajGharana</p>
             <p className="text-xs text-gray-500">2-3 day delivery available</p>
           </div>
         </div>
