@@ -50,7 +50,7 @@ const paymentOptions = [
 
 const OrderSummary = () => {
 
-  const { currency, formatPrice, router, getCartCount, getCartAmount, setCartItems, userAddresses } = useAppContext()
+  const { currency, formatPrice, router, getCartCount, getCartAmount, setCartItems, userAddresses, createOrder } = useAppContext()
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -77,6 +77,12 @@ const OrderSummary = () => {
     try {
       // Here you can save the order to your database
       // For now, we'll just redirect to order confirmation
+      createOrder({
+        address: selectedAddress,
+        paymentMethod: selectedPaymentOption.title,
+        paymentStatus: selectedPaymentOption.id === "cod" ? "Pending" : "Paid",
+        amount: getTotalAmount(),
+      });
       toast.success('Order placed successfully!');
       setCartItems({});
       router.push('/order-placed');

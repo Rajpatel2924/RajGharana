@@ -6,7 +6,7 @@ import {
   useClerk,
   useUser,
 } from '@clerk/nextjs';
-import { orderDummyData, addressDummyData } from '@/assets/assets';
+import { addressDummyData } from '@/assets/assets';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import Loading from '@/components/Loading';
@@ -15,10 +15,40 @@ import { useAppContext } from '@/context/AppContext';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 
+const formatOrderDate = (date) => new Date(date).toLocaleDateString('en-IN', {
+  day: '2-digit',
+  month: 'short',
+  year: 'numeric',
+});
+
+const getOrderTimeline = (order) => {
+  const fallbackDate = order.date || Date.now();
+
+  if (Array.isArray(order.timeline) && order.timeline.length > 0) {
+    return order.timeline;
+  }
+
+  return [
+    { status: 'Order Placed', date: fallbackDate },
+    { status: 'Packed', date: fallbackDate + 24 * 60 * 60 * 1000 },
+    { status: 'Shipped', date: fallbackDate + 2 * 24 * 60 * 60 * 1000 },
+    { status: 'Out for Delivery', date: fallbackDate + 3 * 24 * 60 * 60 * 1000 },
+    { status: 'Delivered', date: fallbackDate + 4 * 24 * 60 * 60 * 1000 },
+  ];
+};
+
+const getCurrentStatus = (order) => {
+  const now = Date.now();
+  const timeline = getOrderTimeline(order);
+  const completedSteps = timeline.filter(step => step.completed || now >= step.date);
+
+  return completedSteps.at(-1)?.status || timeline[0]?.status || order.status || 'Order Placed';
+};
+
 export default function AccountPage() {
   const { isLoaded, isSignedIn, user } = useUser();
   const { openUserProfile } = useClerk();
-  const { userAddresses } = useAppContext();
+  const { userAddresses, orders, currency, formatPrice } = useAppContext();
   const [showCommunicationPreferences, setShowCommunicationPreferences] = useState(false);
   const [communicationPreferences, setCommunicationPreferences] = useState({
     orderUpdates: true,
@@ -26,7 +56,7 @@ export default function AccountPage() {
     recommendations: true,
     smsAlerts: false,
   });
-  const recentOrders = orderDummyData.slice(0, 3);
+  const recentOrders = orders.slice(0, 3);
   const defaultAddress = userAddresses[0] || addressDummyData[0];
   const displayName = user?.fullName || user?.firstName || 'Customer';
   const userEmail = user?.emailAddresses?.[0]?.emailAddress || 'No email available';
@@ -153,12 +183,12 @@ export default function AccountPage() {
                     <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
                       <div className="rounded-3xl bg-slate-50 p-5 text-sm">
                         <p className="text-xs uppercase tracking-[0.25em] text-gray-500">Recent orders</p>
-                        <p className="mt-3 text-3xl font-semibold text-slate-900">{orderDummyData.length}</p>
+                        <p className="mt-3 text-3xl font-semibold text-slate-900">{orders.length}</p>
                         <p className="mt-2 text-sm text-slate-500">orders placed</p>
                       </div>
                       <div className="rounded-3xl bg-slate-50 p-5 text-sm">
                         <p className="text-xs uppercase tracking-[0.25em] text-gray-500">Saved addresses</p>
-                        <p className="mt-3 text-3xl font-semibold text-slate-900">{addressDummyData.length}</p>
+                        <p className="mt-3 text-3xl font-semibold text-slate-900">{userAddresses.length}</p>
                         <p className="mt-2 text-sm text-slate-500">delivery addresses</p>
                       </div>
                       <div className="rounded-3xl bg-slate-50 p-5 text-sm">
@@ -185,22 +215,37 @@ export default function AccountPage() {
                       </Link>
                     </div>
                     <div className="mt-6 space-y-4">
-                      {recentOrders.map((order) => (
-                        <div key={order._id} className="rounded-3xl border border-slate-200 bg-slate-50 p-5">
-                          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-                            <div>
-                              <p className="text-sm text-slate-500">Order ID: {order._id}</p>
-                              <p className="mt-2 text-base font-semibold text-slate-900">{order.items.map((item) => item.product.name).join(', ')}</p>
-                              <p className="mt-1 text-sm text-slate-600">{new Date(order.date).toLocaleDateString()}</p>
-                            </div>
-                            <div className="space-y-1 text-right">
-                              <p className="text-sm uppercase tracking-[0.2em] text-gray-500">Status</p>
-                              <p className="font-semibold text-slate-900">{order.status}</p>
-                              <p className="text-sm text-slate-600">${order.amount.toFixed(2)}</p>
+                      {recentOrders.length === 0 && (
+                        <div className="rounded-3xl border border-dashed border-slate-300 bg-slate-50 p-6 text-sm text-slate-500">
+                          No orders yet. Orders you place from checkout will appear here.
+                        </div>
+                      )}
+                      {recentOrders.map((order) => {
+                        const timeline = getOrderTimeline(order);
+                        const currentStatus = getCurrentStatus(order);
+                        const deliveryStep = timeline[timeline.length - 1];
+
+                        return (
+                          <div key={order._id} className="rounded-3xl border border-slate-200 bg-slate-50 p-5">
+                            <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                              <div>
+                                <p className="text-sm text-slate-500">Order ID: {order._id}</p>
+                                <p className="mt-2 text-base font-semibold text-slate-900">{order.items.map((item) => item.product.name).join(', ')}</p>
+                                <p className="mt-1 text-sm text-slate-600">Placed on {formatOrderDate(order.date)}</p>
+                                <p className="mt-1 text-sm text-slate-500">
+                                  Expected delivery by {formatOrderDate(deliveryStep.date)}
+                                </p>
+                              </div>
+                              <div className="space-y-1 text-left lg:text-right">
+                                <p className="text-sm uppercase tracking-[0.2em] text-gray-500">Status</p>
+                                <p className="font-semibold text-slate-900">{currentStatus}</p>
+                                <p className="text-sm text-slate-600">{currency}{formatPrice(order.amount)}</p>
+                                <p className="text-sm text-slate-500">{order.paymentMethod || 'Cash on Delivery'}</p>
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   </div>
 

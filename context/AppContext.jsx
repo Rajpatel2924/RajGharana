@@ -20,6 +20,7 @@ export const AppContextProvider = (props) => {
     const [isSeller, setIsSeller] = useState(true)
     const [cartItems, setCartItems] = useState({})
     const [userAddresses, setUserAddresses] = useState([])
+    const [orders, setOrders] = useState([])
 
     // New state for Amazon-like features
     const [wishlistItems, setWishlistItems] = useState([])
@@ -35,6 +36,7 @@ export const AppContextProvider = (props) => {
     const wishlistStorageKey = 'rajgharana_wishlist';
     const addressStorageKey = 'rajgharana_addresses';
     const sellerProductsStorageKey = 'rajgharana_seller_products';
+    const ordersStorageKey = 'rajgharana_orders';
 
     // Load wishlist from localStorage on mount
     useEffect(() => {
@@ -84,6 +86,19 @@ export const AppContextProvider = (props) => {
             localStorage.setItem(addressStorageKey, JSON.stringify(userAddresses));
         }
     }, [userAddresses, addressStorageKey])
+
+    useEffect(() => {
+        const savedOrders = localStorage.getItem(ordersStorageKey);
+
+        if (!savedOrders) return;
+
+        try {
+            const parsedOrders = JSON.parse(savedOrders);
+            setOrders(Array.isArray(parsedOrders) ? parsedOrders : []);
+        } catch (e) {
+            setOrders([]);
+        }
+    }, [ordersStorageKey])
 
     const fetchProductData = async () => {
         const savedSellerProducts = localStorage.getItem(sellerProductsStorageKey);
@@ -147,6 +162,77 @@ export const AppContextProvider = (props) => {
         localStorage.setItem(sellerProductsStorageKey, JSON.stringify([newProduct, ...sellerProducts]));
         setProducts(prev => [newProduct, ...prev]);
         return newProduct;
+    }
+
+    const createOrder = ({ address, paymentMethod, paymentStatus, amount }) => {
+        const orderItems = Object.entries(cartItems)
+            .filter(([, quantity]) => quantity > 0)
+            .map(([productId, quantity]) => {
+                const product = products.find(item => item._id === productId);
+                return product ? {
+                    _id: `item_${productId}_${Date.now()}`,
+                    product,
+                    quantity,
+                } : null;
+            })
+            .filter(Boolean);
+
+        if (orderItems.length === 0) {
+            return null;
+        }
+
+        const placedAt = Date.now();
+        const newOrder = {
+            _id: `order_${placedAt}`,
+            userId: userData?._id || 'local_user',
+            items: orderItems,
+            amount,
+            address,
+            status: 'Order Placed',
+            paymentMethod,
+            paymentStatus,
+            date: placedAt,
+            timeline: [
+                {
+                    status: 'Order Placed',
+                    description: 'We have received your order.',
+                    date: placedAt,
+                    completed: true,
+                },
+                {
+                    status: 'Packed',
+                    description: 'Your item is being prepared for dispatch.',
+                    date: placedAt + 24 * 60 * 60 * 1000,
+                    completed: false,
+                },
+                {
+                    status: 'Shipped',
+                    description: 'Your package has left the fulfillment center.',
+                    date: placedAt + 2 * 24 * 60 * 60 * 1000,
+                    completed: false,
+                },
+                {
+                    status: 'Out for Delivery',
+                    description: 'Your package is on the way.',
+                    date: placedAt + 3 * 24 * 60 * 60 * 1000,
+                    completed: false,
+                },
+                {
+                    status: 'Delivered',
+                    description: 'Package delivered to your address.',
+                    date: placedAt + 4 * 24 * 60 * 60 * 1000,
+                    completed: false,
+                },
+            ],
+        };
+
+        setOrders(prev => {
+            const next = [newOrder, ...prev];
+            localStorage.setItem(ordersStorageKey, JSON.stringify(next));
+            return next;
+        });
+
+        return newOrder;
     }
 
     // Wishlist functions
@@ -347,6 +433,7 @@ export const AppContextProvider = (props) => {
         addToCart, updateCartQuantity,
         getCartCount, getCartAmount,
         userAddresses, addAddress,
+        orders, createOrder,
 
         // New Amazon-like features
         wishlistItems, toggleWishlist, isInWishlist, getWishlistProducts,
