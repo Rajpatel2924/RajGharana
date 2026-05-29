@@ -2,7 +2,9 @@
   <img src="./screenshots/logo.png" width="200" alt="RajGharana Logo" />
 </p>
 <p align="center">
-  Luxury Fashion & Modern eCommerce Experience
+  <strong>
+  𝗟𝘂𝘅𝘂𝗿𝘆 𝗙𝗮𝘀𝗵𝗶𝗼𝗻 • 𝗠𝗼𝗱𝗲𝗿𝗻 𝗲𝗖𝗼𝗺𝗺𝗲𝗿𝗰𝗲 • 𝗣𝗿𝗲𝗺𝗶𝘂𝗺 𝗘𝘅𝗽𝗲𝗿𝗶𝗲𝗻𝗰𝗲
+  </strong>
 </p>
 
 RajGharana is a modern full-stack luxury fashion eCommerce platform built with **Next.js 15**, **Tailwind CSS**, **Clerk Authentication**, and **Razorpay Integration**.
