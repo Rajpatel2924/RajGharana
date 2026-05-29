@@ -1,9 +1,6 @@
 <p align="center">
-  <img src="./screenshots/logo.png" width="180" alt="RajGharana Logo" />
+  <img src="./screenshots/logo.png" width="200" alt="RajGharana Logo" />
 </p>
-
-<h1 align="center">RajGharana</h1>
-
 <p align="center">
   Luxury Fashion & Modern eCommerce Experience
 </p>
