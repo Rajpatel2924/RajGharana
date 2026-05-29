@@ -1,91 +1,229 @@
-# RajGharana - A simple eCommerce website
+# 👑 RajGharana  
+### Luxury Fashion & Modern eCommerce Experience
 
-RajGharana is an open-source **Next.js eCommerce frontend** project.  
-It provides a modern, fast and customizable shopping UI.  
-This repo is **frontend only** – contributors can improve the design, add new pages, animations and more.
+RajGharana is a modern full-stack luxury fashion eCommerce platform built with **Next.js 15**, **Tailwind CSS**, **Clerk Authentication**, and **Razorpay Integration**.
 
----
-
-## Features
-
--   Built with **Next.js + Tailwind CSS**
--   Responsive design
--   Reusable components
--   Customizable layouts and colors
--   **Razorpay Payment Integration** - Secure payment processing
--   Open for contributions (UI/UX, animations, themes, layouts etc.)
+Designed with a premium UI/UX approach, RajGharana delivers a seamless shopping experience with secure authentication, smooth checkout flow, wishlist management, order tracking, and responsive design across all devices.
 
 ---
 
-## Getting Started
+# ✨ Features
 
-1. Clone the repo
-
-    ```bash
-    git clone https://github.com/Rajpatel2924/RajGharana.git
-    cd RajGharana
-    ```
-
-2. Install dependencies
-
-    ```bash
-    npm install
-    ```
-
-3. Run locally
-
-    ```bash
-    npm run dev
-    ```
-
-## 💳 Payment Integration (Razorpay)
-
-RajGharana includes integrated **Razorpay payment gateway** for secure transactions.
-
-### Quick Setup:
-
-1. Sign up at [Razorpay](https://razorpay.com)
-2. Get your API keys from the Razorpay Dashboard
-3. Copy `.env.example` to `.env.local`:
-   ```bash
-   cp .env.example .env.local
-   ```
-4. Add your Razorpay keys to `.env.local`:
-   ```
-   RAZORPAY_KEY_ID=your_key_id
-   NEXT_PUBLIC_RAZORPAY_KEY_ID=your_key_id
-   RAZORPAY_KEY_SECRET=your_key_secret
-   ```
-
-For detailed setup instructions, see [RAZORPAY_SETUP.md](./RAZORPAY_SETUP.md)
+- 🛍️ Modern Luxury eCommerce UI
+- 🔐 Authentication with Clerk
+- 💳 Razorpay Payment Gateway Integration
+- ❤️ Wishlist Functionality
+- 🛒 Shopping Cart System
+- 📦 Order Management
+- 📱 Fully Responsive Design
+- ⚡ Optimized Performance with Next.js 15
+- 🎨 Tailwind CSS Styling
+- 🔄 Reusable Components Architecture
+- 🌙 Clean and Elegant User Experience
 
 ---
 
-## Contributing
+# 🧠 Tech Stack
 
-We welcome all kinds of contributions! You can:
+## Frontend
+- Next.js 15
+- React 19
+- Tailwind CSS
 
-- Create new pages
-- Improve layouts
-- Add animations and transitions
-- Enhance responsiveness
-- Refactor components
-- Suggest new UI/UX ideas
-- Add themes or color variations
-- Introduce accessibility improvements
-- Add filtering/search features
-- Improve documentation
+## Authentication
+- Clerk
 
-Check out [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines.
+## Payments
+- Razorpay
 
----
-
-## License
-
-This project is licensed under the **MIT License**.
+## Utilities
+- Axios
+- React Hot Toast
 
 ---
 
-## 🌟 Contributors
+# 📂 Project Structure
 
-Thanks to everyone who contributes to **RajGharana**!
+```bash
+RajGharana/
+│
+├── app/                # App Router Pages
+├── components/         # Reusable UI Components
+├── context/            # Global State Management
+├── assets/             # Images & Static Assets
+├── lib/                # Utility Functions
+├── middleware.ts       # Middleware Configuration
+└── public/             # Public Assets
+```
+
+---
+
+# 🚀 Getting Started
+
+## 1️⃣ Clone the Repository
+
+```bash
+git clone https://github.com/YOUR_USERNAME/RajGharana.git
+```
+
+## 2️⃣ Navigate to Project Folder
+
+```bash
+cd RajGharana
+```
+
+## 3️⃣ Install Dependencies
+
+```bash
+npm install
+```
+
+## 4️⃣ Setup Environment Variables
+
+Create a `.env.local` file in the root directory.
+
+```env
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
+CLERK_SECRET_KEY=
+
+RAZORPAY_KEY_ID=
+NEXT_PUBLIC_RAZORPAY_KEY_ID=
+RAZORPAY_KEY_SECRET=
+```
+
+---
+
+# ▶️ Run Development Server
+
+```bash
+npm run dev
+```
+
+Now open:
+
+```bash
+http://localhost:3000
+```
+
+---
+
+# 💳 Razorpay Setup
+
+1. Create an account on Razorpay
+2. Generate API Keys
+3. Add keys to `.env.local`
+4. Restart development server
+
+Detailed guide available in:
+
+```bash
+RAZORPAY_SETUP.md
+```
+
+---
+
+# 📸 Screenshots
+
+## Home Page
+
+
+
+## Product Page
+![Uploading image.png…]()
+
+
+## Cart & Checkout
+![Uploading image.png…]()
+
+
+---
+
+# 🌟 Future Improvements
+
+- 🔍 Advanced Product Search
+- 🧠 AI-based Recommendations
+- 📊 Admin Dashboard
+- 🌐 Multi-language Support
+- 📦 Inventory Management
+- 🧾 Invoice Generation
+- 📈 Analytics Dashboard
+
+---
+
+# 🤝 Contributing
+
+Contributions are welcome!
+
+If you'd like to improve the project:
+
+1. Fork the repository
+2. Create your feature branch
+
+```bash
+git checkout -b feature/amazing-feature
+```
+
+3. Commit your changes
+
+```bash
+git commit -m "Add amazing feature"
+```
+
+4. Push to the branch
+
+```bash
+git push origin feature/amazing-feature
+```
+
+5. Open a Pull Request
+
+---
+
+# 🛡️ License
+
+This project is licensed under the MIT License.
+
+---
+
+# 👨‍💻 Developer
+
+## Raj Tiwari
+
+Passionate developer focused on:
+- Full Stack Development
+- AI & Machine Learning
+- Scalable Product Building
+- Modern UI/UX Experiences
+
+---
+
+# 📬 Connect With Me
+
+## GitHub
+```bash
+https://github.com/Rajpatel2924
+```
+
+## LinkedIn
+```bash
+https://www.linkedin.com/in/rajpatel2924
+```
+
+## Email
+```bash
+rajpatel805233@gmail.com
+```
+
+---
+
+# ⭐ Support
+
+If you liked this project:
+
+- Star the repository ⭐
+- Fork the project 🍴
+- Share it with others 🚀
+
+---
+
+> “Code. Build. Scale. Repeat.”
