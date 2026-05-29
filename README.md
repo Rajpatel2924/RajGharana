@@ -63,7 +63,7 @@ RajGharana/
 ## 1️⃣ Clone the Repository
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/RajGharana.git
+git clone https://github.com/rajpatel2924/RajGharana.git
 ```
 
 ## 2️⃣ Navigate to Project Folder
@@ -187,7 +187,7 @@ This project is licensed under the MIT License.
 
 # 👨‍💻 Developer
 
-## Raj Tiwari
+## Raj Patel
 
 Passionate developer focused on:
 - Full Stack Development
