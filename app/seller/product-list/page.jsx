@@ -1,30 +1,17 @@
 'use client'
-import React, { useEffect, useState } from "react";
-import { assets, productsDummyData } from "@/assets/assets";
+import React from "react";
+import { assets } from "@/assets/assets";
 import Image from "next/image";
 import { useAppContext } from "@/context/AppContext";
 import Footer from "@/components/seller/Footer";
-import Loading from "@/components/Loading";
 
 const ProductList = () => {
 
-  const { router, currency, formatPrice } = useAppContext()
-
-  const [products, setProducts] = useState([])
-  const [loading, setLoading] = useState(true)
-
-  const fetchSellerProduct = async () => {
-    setProducts(productsDummyData)
-    setLoading(false)
-  }
-
-  useEffect(() => {
-    fetchSellerProduct();
-  }, [])
+  const { router, currency, formatPrice, products } = useAppContext()
 
   return (
     <div className="flex-1 min-h-screen flex flex-col justify-between">
-      {loading ? <Loading /> : <div className="w-full md:p-10 p-4">
+      <div className="w-full md:p-10 p-4">
         <h2 className="pb-4 text-lg font-medium">All Product</h2>
         <div className="flex flex-col items-center max-w-4xl w-full overflow-hidden rounded-md bg-white border border-gray-500/20">
           <table className=" table-fixed w-full overflow-hidden">
@@ -72,7 +59,7 @@ const ProductList = () => {
             </tbody>
           </table>
         </div>
-      </div>}
+      </div>
       <Footer />
     </div>
   );

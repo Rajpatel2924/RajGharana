@@ -4,6 +4,50 @@ import React, { useEffect, useState } from "react";
 import RazorpayButton from "./RazorpayButton";
 import toast from "react-hot-toast";
 
+const paymentOptions = [
+  {
+    id: "cod",
+    title: "Cash on Delivery",
+    description: "Pay by cash or UPI when your order arrives.",
+  },
+  {
+    id: "upi",
+    title: "UPI",
+    description: "Pay using Google Pay, PhonePe, Paytm, or any UPI app.",
+    method: { upi: true },
+  },
+  {
+    id: "card",
+    title: "Credit or Debit Card",
+    description: "Visa, Mastercard, RuPay, and other major cards.",
+    method: { card: true },
+  },
+  {
+    id: "netbanking",
+    title: "Net Banking",
+    description: "Pay directly from your bank account.",
+    method: { netbanking: true },
+  },
+  {
+    id: "wallet",
+    title: "Wallets",
+    description: "Use supported mobile wallets through Razorpay.",
+    method: { wallet: true },
+  },
+  {
+    id: "emi",
+    title: "EMI",
+    description: "Check available EMI plans during payment.",
+    method: { emi: true },
+  },
+  {
+    id: "paylater",
+    title: "Pay Later",
+    description: "Use supported pay-later providers if eligible.",
+    method: { paylater: true },
+  },
+];
+
 const OrderSummary = () => {
 
   const { currency, formatPrice, router, getCartCount, getCartAmount, setCartItems, userAddresses } = useAppContext()
@@ -11,6 +55,7 @@ const OrderSummary = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("cod");
+  const selectedPaymentOption = paymentOptions.find(option => option.id === paymentMethod) || paymentOptions[0];
 
   const handleAddressSelect = (address) => {
     setSelectedAddress(address);
@@ -136,28 +181,29 @@ const OrderSummary = () => {
             Payment Method
           </label>
           <div className="space-y-2">
-            <label className="flex cursor-pointer items-center gap-3 border bg-white px-4 py-3 text-sm text-gray-700">
-              <input
-                type="radio"
-                name="paymentMethod"
-                value="cod"
-                checked={paymentMethod === "cod"}
-                onChange={() => setPaymentMethod("cod")}
-                className="accent-orange-600"
-              />
-              <span>Cash on Delivery</span>
-            </label>
-            <label className="flex cursor-pointer items-center gap-3 border bg-white px-4 py-3 text-sm text-gray-700">
-              <input
-                type="radio"
-                name="paymentMethod"
-                value="razorpay"
-                checked={paymentMethod === "razorpay"}
-                onChange={() => setPaymentMethod("razorpay")}
-                className="accent-orange-600"
-              />
-              <span>Razorpay Online Payment</span>
-            </label>
+            {paymentOptions.map(option => (
+              <label
+                key={option.id}
+                className={`flex cursor-pointer items-start gap-3 border bg-white px-4 py-3 text-sm transition ${
+                  paymentMethod === option.id
+                    ? "border-orange-500 ring-1 ring-orange-500/30"
+                    : "border-gray-200 hover:border-gray-300"
+                }`}
+              >
+                <input
+                  type="radio"
+                  name="paymentMethod"
+                  value={option.id}
+                  checked={paymentMethod === option.id}
+                  onChange={() => setPaymentMethod(option.id)}
+                  className="mt-1 accent-orange-600"
+                />
+                <span>
+                  <span className="block font-medium text-gray-800">{option.title}</span>
+                  <span className="mt-1 block text-xs leading-5 text-gray-500">{option.description}</span>
+                </span>
+              </label>
+            ))}
           </div>
         </div>
 
@@ -191,7 +237,7 @@ const OrderSummary = () => {
         <button disabled className="w-full bg-gray-400 text-white py-3 mt-5 cursor-not-allowed font-medium">
           Add Items to Cart
         </button>
-      ) : paymentMethod === "cod" ? (
+      ) : selectedPaymentOption.id === "cod" ? (
         <button
           disabled={isProcessing}
           onClick={placeOrder}
@@ -203,7 +249,7 @@ const OrderSummary = () => {
         <div className="space-y-3">
           {!razorpayConfigured && (
             <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
-              Razorpay is not configured for this app. Add your keys to <span className="font-semibold">.env.local</span> using the values from <span className="font-semibold">.env.example</span>, or choose Cash on Delivery.
+              Online payments are not configured for this app. Add Razorpay keys to <span className="font-semibold">.env.local</span>, or choose Cash on Delivery.
             </div>
           )}
           <RazorpayButton
@@ -211,6 +257,8 @@ const OrderSummary = () => {
             email={selectedAddress.email || userDummyData.email}
             phone={selectedAddress.phoneNumber || userDummyData.phone}
             name={selectedAddress.fullName || userDummyData.name}
+            paymentMethodConfig={selectedPaymentOption.method}
+            buttonLabel={`Pay ${currency}${formatPrice(getTotalAmount())} with ${selectedPaymentOption.title}`}
             onPaymentSuccess={handlePaymentSuccess}
             onPaymentFailure={handlePaymentFailure}
           />

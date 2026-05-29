@@ -5,7 +5,16 @@ import Script from 'next/script';
 import toast from 'react-hot-toast';
 import axios from 'axios';
 
-const RazorpayButton = ({ amount, email, phone, name, onPaymentSuccess, onPaymentFailure }) => {
+const RazorpayButton = ({
+  amount,
+  email,
+  phone,
+  name,
+  buttonLabel,
+  paymentMethodConfig,
+  onPaymentSuccess,
+  onPaymentFailure
+}) => {
   const [loading, setLoading] = useState(false);
   const [scriptLoaded, setScriptLoaded] = useState(false);
   const [scriptError, setScriptError] = useState(false);
@@ -68,6 +77,7 @@ const RazorpayButton = ({ amount, email, phone, name, onPaymentSuccess, onPaymen
         theme: {
           color: '#F97316', // Orange color matching your brand
         },
+        method: paymentMethodConfig,
         handler: async (response) => {
           setLoading(true);
           try {
@@ -167,12 +177,12 @@ const RazorpayButton = ({ amount, email, phone, name, onPaymentSuccess, onPaymen
         ) : !isConfigured ? (
           'Razorpay not configured'
         ) : (
-          `Pay ₹${amount?.toFixed(2) || '0'} with Razorpay`
+          buttonLabel || `Pay ₹${amount?.toFixed(2) || '0'} with Razorpay`
         )}
       </button>
       {!isConfigured && (
         <p className="text-xs text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-2">
-          Razorpay is not configured. Copy <span className="font-semibold">.env.local.example</span> to <span className="font-semibold">.env.local</span> and add your test or live keys.
+          Razorpay is not configured. Add your test or live keys to <span className="font-semibold">.env.local</span>.
         </p>
       )}
     </div>

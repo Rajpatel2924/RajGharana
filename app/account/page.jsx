@@ -3,6 +3,7 @@
 import {
   SignInButton,
   SignOutButton,
+  useClerk,
   useUser,
 } from '@clerk/nextjs';
 import { orderDummyData, addressDummyData } from '@/assets/assets';
@@ -11,14 +12,57 @@ import Footer from '@/components/Footer';
 import Loading from '@/components/Loading';
 import Link from 'next/link';
 import { useAppContext } from '@/context/AppContext';
+import { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
 
 export default function AccountPage() {
   const { isLoaded, isSignedIn, user } = useUser();
+  const { openUserProfile } = useClerk();
   const { userAddresses } = useAppContext();
+  const [showCommunicationPreferences, setShowCommunicationPreferences] = useState(false);
+  const [communicationPreferences, setCommunicationPreferences] = useState({
+    orderUpdates: true,
+    offers: false,
+    recommendations: true,
+    smsAlerts: false,
+  });
   const recentOrders = orderDummyData.slice(0, 3);
   const defaultAddress = userAddresses[0] || addressDummyData[0];
   const displayName = user?.fullName || user?.firstName || 'Customer';
   const userEmail = user?.emailAddresses?.[0]?.emailAddress || 'No email available';
+
+  useEffect(() => {
+    const savedPreferences = localStorage.getItem('rajgharana_communication_preferences');
+
+    if (!savedPreferences) return;
+
+    try {
+      setCommunicationPreferences({
+        ...communicationPreferences,
+        ...JSON.parse(savedPreferences),
+      });
+    } catch (e) {
+      localStorage.removeItem('rajgharana_communication_preferences');
+    }
+  }, []);
+
+  const updateCommunicationPreference = (key) => {
+    setCommunicationPreferences(prev => {
+      const next = { ...prev, [key]: !prev[key] };
+      localStorage.setItem('rajgharana_communication_preferences', JSON.stringify(next));
+      return next;
+    });
+  };
+
+  const saveCommunicationPreferences = () => {
+    localStorage.setItem('rajgharana_communication_preferences', JSON.stringify(communicationPreferences));
+    toast.success('Communication preferences saved.');
+    setShowCommunicationPreferences(false);
+  };
+
+  const openAccountProfile = () => {
+    openUserProfile();
+  };
 
   if (!isLoaded) {
     return (
@@ -93,12 +137,12 @@ export default function AccountPage() {
                       <Link href="/add-address" className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-800 hover:bg-slate-100">
                         Manage addresses
                       </Link>
-                      <Link href="/account" className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-800 hover:bg-slate-100">
+                      <button onClick={openAccountProfile} className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-left text-slate-800 hover:bg-slate-100">
                         Account settings
-                      </Link>
-                      <button className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-left text-slate-800 hover:bg-slate-100">
-                        Customer service
                       </button>
+                      <Link href="/contact" className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-left text-slate-800 hover:bg-slate-100">
+                        Customer service
+                      </Link>
                     </div>
                   </div>
                 </aside>
@@ -185,16 +229,62 @@ export default function AccountPage() {
                   <div className="rounded-3xl bg-white border border-slate-200 p-6 shadow-sm">
                     <h2 className="text-lg font-semibold text-slate-900">Account settings</h2>
                     <div className="mt-5 grid gap-3 text-sm">
-                      <Link href="/account" className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-800 hover:bg-slate-100">
+                      <button onClick={openAccountProfile} className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-left text-slate-800 hover:bg-slate-100">
                         Manage personal information
-                      </Link>
-                      <button className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-left text-slate-800 hover:bg-slate-100">
+                      </button>
+                      <button onClick={openAccountProfile} className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-left text-slate-800 hover:bg-slate-100">
                         Change password
                       </button>
-                      <button className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-left text-slate-800 hover:bg-slate-100">
+                      <button
+                        onClick={() => setShowCommunicationPreferences(prev => !prev)}
+                        className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-left text-slate-800 hover:bg-slate-100"
+                      >
                         Communication preferences
                       </button>
                     </div>
+                    {showCommunicationPreferences && (
+                      <div className="mt-5 rounded-3xl border border-orange-100 bg-orange-50/40 p-5">
+                        <div className="flex items-start justify-between gap-4">
+                          <div>
+                            <h3 className="text-base font-semibold text-slate-900">Communication preferences</h3>
+                            <p className="mt-1 text-sm text-slate-600">Choose which updates RajGharana can send you.</p>
+                          </div>
+                          <button
+                            onClick={() => setShowCommunicationPreferences(false)}
+                            className="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-medium text-slate-600 hover:bg-slate-100"
+                          >
+                            Close
+                          </button>
+                        </div>
+                        <div className="mt-5 grid gap-3">
+                          {[
+                            ['orderUpdates', 'Order and delivery updates', 'Important messages about purchases and returns.'],
+                            ['offers', 'Deals and promotional offers', 'Sale alerts, coupons, and limited-time offers.'],
+                            ['recommendations', 'Product recommendations', 'Personalized product suggestions based on shopping activity.'],
+                            ['smsAlerts', 'SMS alerts', 'Short delivery and account updates on your phone.'],
+                          ].map(([key, title, description]) => (
+                            <label key={key} className="flex cursor-pointer items-center justify-between gap-4 rounded-2xl border border-slate-200 bg-white p-4">
+                              <span>
+                                <span className="block text-sm font-medium text-slate-900">{title}</span>
+                                <span className="mt-1 block text-xs text-slate-500">{description}</span>
+                              </span>
+                              <input
+                                type="checkbox"
+                                checked={communicationPreferences[key]}
+                                onChange={() => updateCommunicationPreference(key)}
+                                className="h-5 w-5 accent-orange-600"
+                              />
+                            </label>
+                          ))}
+                        </div>
+                        <button
+                          onClick={saveCommunicationPreferences}
+                          className="mt-5 rounded-full bg-orange-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-orange-700"
+                        >
+                          Save preferences
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </section>
               </div>

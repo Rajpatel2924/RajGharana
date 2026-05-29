@@ -34,6 +34,7 @@ export const AppContextProvider = (props) => {
 
     const wishlistStorageKey = 'rajgharana_wishlist';
     const addressStorageKey = 'rajgharana_addresses';
+    const sellerProductsStorageKey = 'rajgharana_seller_products';
 
     // Load wishlist from localStorage on mount
     useEffect(() => {
@@ -85,6 +86,22 @@ export const AppContextProvider = (props) => {
     }, [userAddresses, addressStorageKey])
 
     const fetchProductData = async () => {
+        const savedSellerProducts = localStorage.getItem(sellerProductsStorageKey);
+
+        if (savedSellerProducts) {
+            try {
+                const parsedProducts = JSON.parse(savedSellerProducts);
+                setProducts([
+                    ...(Array.isArray(parsedProducts) ? parsedProducts : []),
+                    ...productsDummyData
+                ]);
+                return;
+            } catch (e) {
+                setProducts(productsDummyData);
+                return;
+            }
+        }
+
         setProducts(productsDummyData)
     }
 
@@ -100,6 +117,36 @@ export const AppContextProvider = (props) => {
 
         setUserAddresses(prev => [newAddress, ...prev]);
         return newAddress;
+    }
+
+    const addProduct = (product) => {
+        const newProduct = {
+            ...product,
+            _id: `seller_${Date.now()}`,
+            userId: userData?._id || 'local_seller',
+            rating: 0,
+            ratings: [],
+            bestseller: false,
+            badge: 'New',
+            date: Date.now(),
+            __v: 0,
+        };
+
+        const savedSellerProducts = localStorage.getItem(sellerProductsStorageKey);
+        let sellerProducts = [];
+
+        if (savedSellerProducts) {
+            try {
+                const parsedProducts = JSON.parse(savedSellerProducts);
+                sellerProducts = Array.isArray(parsedProducts) ? parsedProducts : [];
+            } catch (e) {
+                sellerProducts = [];
+            }
+        }
+
+        localStorage.setItem(sellerProductsStorageKey, JSON.stringify([newProduct, ...sellerProducts]));
+        setProducts(prev => [newProduct, ...prev]);
+        return newProduct;
     }
 
     // Wishlist functions
@@ -295,6 +342,7 @@ export const AppContextProvider = (props) => {
         isSeller, setIsSeller,
         userData, fetchUserData,
         products, fetchProductData,
+        addProduct,
         cartItems, setCartItems,
         addToCart, updateCartQuantity,
         getCartCount, getCartAmount,

@@ -2,8 +2,20 @@
 import React, { useState } from "react";
 import { assets } from "@/assets/assets";
 import Image from "next/image";
+import { useAppContext } from "@/context/AppContext";
+import toast from "react-hot-toast";
+
+const fileToDataUrl = (file) => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+};
 
 const AddProduct = () => {
+  const { addProduct, router } = useAppContext();
 
   const [files, setFiles] = useState([]);
   const [name, setName] = useState('');
@@ -15,6 +27,50 @@ const AddProduct = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const selectedFiles = files.filter(Boolean);
+
+    if (selectedFiles.length === 0) {
+      toast.error('Please upload at least one product image.');
+      return;
+    }
+
+    const numericPrice = Number(price);
+    const numericOfferPrice = Number(offerPrice);
+
+    if (numericPrice <= 0 || numericOfferPrice <= 0) {
+      toast.error('Product price and offer price must be greater than 0.');
+      return;
+    }
+
+    if (numericOfferPrice > numericPrice) {
+      toast.error('Offer price cannot be higher than product price.');
+      return;
+    }
+
+    try {
+      const imageUrls = await Promise.all(selectedFiles.map(fileToDataUrl));
+
+      addProduct({
+        name: name.trim(),
+        description: description.trim(),
+        category,
+        price: numericPrice,
+        offerPrice: numericOfferPrice,
+        image: imageUrls,
+      });
+
+      toast.success('Product added successfully.');
+      setFiles([]);
+      setName('');
+      setDescription('');
+      setCategory('Earphone');
+      setPrice('');
+      setOfferPrice('');
+      router.push('/seller/product-list');
+    } catch (error) {
+      console.error('Product add failed:', error);
+      toast.error('Failed to add product image. Please try again.');
+    }
   };
 
   return (
@@ -30,7 +86,7 @@ const AddProduct = () => {
                   const updatedFiles = [...files];
                   updatedFiles[index] = e.target.files[0];
                   setFiles(updatedFiles);
-                }} type="file" id={`image${index}`} hidden />
+                }} type="file" id={`image${index}`} accept="image/*" hidden />
                 <Image
                   key={index}
                   className="max-w-24 cursor-pointer"
@@ -84,7 +140,7 @@ const AddProduct = () => {
               id="category"
               className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40"
               onChange={(e) => setCategory(e.target.value)}
-              defaultValue={category}
+              value={category}
             >
               <option value="Earphone">Earphone</option>
               <option value="Headphone">Headphone</option>
