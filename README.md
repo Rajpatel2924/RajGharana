@@ -146,14 +146,6 @@ RAZORPAY_SETUP.md
   <img src="./screenshots/checkout.png" width="100%" />
 </p>
 ---
-
-## 💳 Checkout Experience
-
-<p align="center">
-  <img src="./screenshots/checkout.png" width="100%" />
-</p>
-
-
 ---
 
 # 🌟 Future Improvements
