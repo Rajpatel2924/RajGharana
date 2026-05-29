@@ -122,18 +122,36 @@ RAZORPAY_SETUP.md
 
 ---
 
-# 📸 Screenshots
+# 📸 Project Preview
 
-## Home Page
+## 🏠 Homepage
 
+<p align="center">
+  <img src="./screenshots/home.png" width="100%" />
+</p>
 
+---
 
-## Product Page
-![Uploading image.png…]()
+## 🛍️ Products
 
+<p align="center">
+  <img src="./screenshots/products.png" width="100%" />
+</p>
 
-## Cart & Checkout
-![Uploading image.png…]()
+---
+
+## 💳 Checkout Experience
+
+<p align="center">
+  <img src="./screenshots/checkout.png" width="100%" />
+</p>
+---
+
+## 💳 Checkout Experience
+
+<p align="center">
+  <img src="./screenshots/checkout.png" width="100%" />
+</p>
 
 
 ---
