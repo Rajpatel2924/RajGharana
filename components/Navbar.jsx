@@ -5,12 +5,21 @@ import Link from "next/link";
 import { useAppContext } from "@/context/AppContext";
 import Image from "next/image";
 import { UserButton, useUser } from '@clerk/nextjs';
+import { usePathname } from "next/navigation";
+import GooeyNav from "./GooeyNav";
 import SearchBar from "./SearchBar";
+
+const primaryNavItems = [
+  { label: "Home", href: "/" },
+  { label: "Shop", href: "/all-products" },
+];
 
 const Navbar = () => {
   const { isSeller, router, getCartCount, wishlistItems } = useAppContext();
   const { isLoaded, isSignedIn } = useUser();
+  const pathname = usePathname();
   const cartCount = getCartCount();
+  const activeNavIndex = pathname === "/all-products" || pathname.startsWith("/product/") ? 1 : 0;
 
   return (
     <nav className="flex items-center justify-between px-6 md:px-16 lg:px-32 py-3 border-b border-gray-300 text-gray-700">
@@ -23,12 +32,11 @@ const Navbar = () => {
 
       {/* Desktop Categories & Search */}
       <div className="flex items-center gap-6 lg:gap-8 max-md:hidden flex-1 px-6">
-        <Link href="/" className="hover:text-gray-900 transition text-sm">
-          Home
-        </Link>
-        <Link href="/all-products" className="hover:text-gray-900 transition text-sm">
-          Shop
-        </Link>
+        <GooeyNav
+          items={primaryNavItems}
+          initialActiveIndex={activeNavIndex}
+          onNavigate={router.push}
+        />
         <div className="flex-1">
           <SearchBar />
         </div>
