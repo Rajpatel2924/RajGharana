@@ -13,6 +13,7 @@ const GooeyNav = ({
   colors = [1, 2, 3, 1, 2, 3, 4],
   initialActiveIndex = 0,
   onNavigate,
+  onSelect,
 }) => {
   const containerRef = useRef(null);
   const navRef = useRef(null);
@@ -108,6 +109,9 @@ const GooeyNav = ({
     event.preventDefault();
     selectItem(event.currentTarget.parentElement, index);
 
+    if (onSelect) onSelect(item, index);
+    if (!item.href) return;
+
     if (!onNavigate) {
       window.location.assign(item.href);
       return;
@@ -152,9 +156,9 @@ const GooeyNav = ({
       <nav aria-label="Primary navigation">
         <ul ref={navRef}>
           {items.map((item, index) => (
-            <li key={item.href} className={activeIndex === index ? 'active' : ''}>
+            <li key={item.key || item.href} className={activeIndex === index ? 'active' : ''}>
               <a
-                href={item.href}
+                href={item.href || '#'}
                 onClick={(event) => handleClick(event, item, index)}
                 onKeyDown={(event) => handleKeyDown(event, item, index)}
               >
