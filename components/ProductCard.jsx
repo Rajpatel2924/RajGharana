@@ -2,6 +2,7 @@ import React from 'react'
 import { assets } from '@/assets/assets'
 import Image from 'next/image';
 import { useAppContext } from '@/context/AppContext';
+import BorderGlow from './BorderGlow';
 
 const ProductCard = ({ product }) => {
 
@@ -24,31 +25,42 @@ const ProductCard = ({ product }) => {
             onClick={() => { router.push('/product/' + product._id); scrollTo(0, 0) }}
             className="flex flex-col items-start gap-0.5 max-w-[200px] w-full cursor-pointer"
         >
-            <div className="cursor-pointer group relative bg-gray-500/10 rounded-lg w-full h-52 flex items-center justify-center">
-                <Image
-                    src={product.image[0]}
-                    alt={product.name}
-                    className="group-hover:scale-105 transition object-cover w-4/5 h-4/5 md:w-full md:h-full"
-                    width={800}
-                    height={800}
-                />
-                {product.badge && (
-                    <span className="absolute top-2 left-2 bg-orange-600 text-white text-xs px-2 py-1 rounded">
-                        {product.badge}
-                    </span>
-                )}
-                <button
-                    onClick={handleWishlistToggle}
-                    className="absolute top-2 right-2 bg-white p-2 rounded-full shadow-md hover:bg-gray-100 transition"
-                >
+            <BorderGlow
+                glowColor="24 95 53"
+                backgroundColor="#f3f4f6"
+                borderRadius={8}
+                glowRadius={24}
+                glowIntensity={0.75}
+                coneSpread={24}
+                colors={['#ea580c', '#fb923c', '#f43f5e']}
+                className="w-full"
+            >
+                <div className="cursor-pointer group relative bg-gray-500/10 rounded-lg w-full h-52 flex items-center justify-center">
                     <Image
-                        className="h-4 w-4"
-                        src={isWishlisted ? assets.heart_icon : assets.heart_icon}
-                        alt="heart_icon"
-                        style={{ filter: isWishlisted ? 'invert(0.2) sepia(1) saturate(5) hue-rotate(0deg)' : 'none' }}
+                        src={product.image[0]}
+                        alt={product.name}
+                        className="group-hover:scale-105 transition object-cover w-4/5 h-4/5 md:w-full md:h-full"
+                        width={800}
+                        height={800}
                     />
-                </button>
-            </div>
+                    {product.badge && (
+                        <span className="absolute top-2 left-2 bg-orange-600 text-white text-xs px-2 py-1 rounded">
+                            {product.badge}
+                        </span>
+                    )}
+                    <button
+                        onClick={handleWishlistToggle}
+                        className="absolute top-2 right-2 bg-white p-2 rounded-full shadow-md hover:bg-gray-100 transition"
+                    >
+                        <Image
+                            className="h-4 w-4"
+                            src={isWishlisted ? assets.heart_icon : assets.heart_icon}
+                            alt="heart_icon"
+                            style={{ filter: isWishlisted ? 'invert(0.2) sepia(1) saturate(5) hue-rotate(0deg)' : 'none' }}
+                        />
+                    </button>
+                </div>
+            </BorderGlow>
 
             <p className="md:text-base font-medium pt-2 w-full truncate">{product.name}</p>
             <p className="w-full text-xs text-gray-500/70 max-sm:hidden truncate">{product.description}</p>
