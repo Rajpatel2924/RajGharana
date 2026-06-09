@@ -1,9 +1,6 @@
 <p align="center">
   <img src="./screenshots/logo.png" width="200" alt="RajGharana logo" />
 </p>
-
-<h1 align="center">RajGharana</h1>
-
 <p align="center">
   A full-stack eCommerce storefront with secure authentication, product discovery,
   seller tools, persistent orders, and online payments.
