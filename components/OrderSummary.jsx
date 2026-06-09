@@ -75,9 +75,7 @@ const OrderSummary = () => {
 
     setIsProcessing(true);
     try {
-      // Here you can save the order to your database
-      // For now, we'll just redirect to order confirmation
-      createOrder({
+      await createOrder({
         address: selectedAddress,
         paymentMethod: selectedPaymentOption.title,
         paymentStatus: selectedPaymentOption.id === "cod" ? "Pending" : "Paid",

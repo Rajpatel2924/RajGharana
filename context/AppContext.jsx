@@ -100,6 +100,27 @@ export const AppContextProvider = (props) => {
         }
     }, [ordersStorageKey])
 
+    useEffect(() => {
+        const fetchOrders = async () => {
+            try {
+                const response = await fetch('/api/orders');
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'Failed to load orders');
+                }
+
+                const nextOrders = Array.isArray(data.orders) ? data.orders : [];
+                setOrders(nextOrders);
+                localStorage.setItem(ordersStorageKey, JSON.stringify(nextOrders));
+            } catch (error) {
+                console.error('Error loading Supabase orders:', error);
+            }
+        };
+
+        fetchOrders();
+    }, [ordersStorageKey])
+
     const fetchProductData = async () => {
         const savedSellerProducts = localStorage.getItem(sellerProductsStorageKey);
 
@@ -164,7 +185,7 @@ export const AppContextProvider = (props) => {
         return newProduct;
     }
 
-    const createOrder = ({ address, paymentMethod, paymentStatus, amount }) => {
+    const createOrder = async ({ address, paymentMethod, paymentStatus, amount }) => {
         const orderItems = Object.entries(cartItems)
             .filter(([, quantity]) => quantity > 0)
             .map(([productId, quantity]) => {
@@ -226,13 +247,29 @@ export const AppContextProvider = (props) => {
             ],
         };
 
+        const response = await fetch('/api/orders', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(newOrder),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error || 'Failed to save order');
+        }
+
+        const savedOrder = data.order || newOrder;
+
         setOrders(prev => {
-            const next = [newOrder, ...prev];
+            const next = [savedOrder, ...prev.filter(order => order._id !== savedOrder._id)];
             localStorage.setItem(ordersStorageKey, JSON.stringify(next));
             return next;
         });
 
-        return newOrder;
+        return savedOrder;
     }
 
     // Wishlist functions
