@@ -7,9 +7,18 @@
 </p>
 
 <p align="center">
-  <a href="https://raj-gharana.vercel.app/"><strong>Live Demo</strong></a>
-  ·
-  <a href="https://github.com/Rajpatel2924/RajGharana">Source Code</a>
+  <a href="https://raj-gharana.vercel.app/">
+    <img src="https://img.shields.io/badge/Live_Demo-Visit_RajGharana-F97316?style=for-the-badge&logo=vercel&logoColor=white" alt="Visit RajGharana live demo" />
+  </a>
+  <a href="https://github.com/Rajpatel2924/RajGharana">
+    <img src="https://img.shields.io/badge/Source_Code-View_on_GitHub-181717?style=for-the-badge&logo=github&logoColor=white" alt="View RajGharana source code on GitHub" />
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://raj-gharana.vercel.app/">
+    <img src="https://img.shields.io/website?url=https%3A%2F%2Fraj-gharana.vercel.app%2F&up_message=online&down_message=offline&style=flat-square&label=deployment" alt="RajGharana deployment status" />
+  </a>
 </p>
 
 ---
